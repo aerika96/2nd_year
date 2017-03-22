@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/aerika/Documents/Assignments/erika_timea_albert/project/a1.c
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+sys/stat.h
+-
+fcntl.h
+-
+unistd.h
+-
+dirent.h
+-
+
