@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <dirent.h>
+#include<ctype.h>
 #define MAGIC 4
 #define HEADER 6
 struct Section{
@@ -14,6 +14,16 @@ struct Section{
     int offset;
     short type;
 };
+
+int check_number(char* string){
+    for(int i=0;i<strlen(string); i++){
+        if(!isdigit(string[i])){
+           return 0;
+        }
+    }
+    return 1;
+}
+
 int input_parse(int list,int parse,int extract,int find_all,int recursive,char* path,char*filter_perm,char *filter_size,int sec,int lin){
     if((list+parse+extract+find_all)==0 || (list+parse+extract+find_all)>1){
         return -2;
@@ -44,6 +54,12 @@ int input_parse(int list,int parse,int extract,int find_all,int recursive,char* 
             return -2;
         }
         return 3;
+    }
+    else if(find_all==1){
+        if(recursive ==1 || strlen(filter_perm)!=0 ||strlen(filter_size)!=0 || sec!=-1 || lin!=-1){
+            return -2;
+        }
+        return 4;
     }
     return -5;
 
@@ -240,13 +256,17 @@ void print_parse_result(int j,short version,char nr_section,struct Section secti
 
 }
 
-int get_line(int fd,int offset, char * line, int line_no){
+int get_line(int fd,int offset, char * line,int size, int line_no){
     int i=0;
     int current_line=0;
+    int chars=0;
+    char * buf = (char*)malloc(size*sizeof(char));
     lseek(fd,offset,SEEK_SET);
-    while(read(fd,&line[i],1)!=0 && current_line<line_no ){
-        if(line[i]=='\n'){
+   while(read(fd,&buf[i],1)!=0 && current_line<line_no && chars<=size){
+        chars++;
+        if(buf[i]=='\n' || chars>size){
             current_line++;
+
             if(current_line<line_no){
                 i=0;
             }
@@ -256,6 +276,11 @@ int get_line(int fd,int offset, char * line, int line_no){
         }
     }
     if(current_line < line_no) return -1;
+    for(int j=0;j<=i;j++){
+        line[j]=buf[j];
+    }
+    line[i]='\0';
+    free(buf);
     return i;
 }
 void extract_line(char *path,struct Section sections[],char nr_section,int sec,int lin){
@@ -269,16 +294,16 @@ void extract_line(char *path,struct Section sections[],char nr_section,int sec,i
         printf("Cannot open file");
         exit(5);
     }
+    //printf("%d",sections[sec-1].size);
     offset=sections[sec-1].offset;
     line=(char*)malloc(sections[sec-1].size*sizeof(char));
-    len=get_line(fd,offset,line,lin);
+    len=get_line(fd,offset,line,sections[sec-1].size,lin);
     if(len == -1){
         printf("ERROR\ninvalid line");
         return;
     }
-  // printf("%d %d",sec,lin);
     printf("SUCCESS\n");
-    for(int i=strlen(line)-1;i>=0;i--){
+    for(int i=len-1;i>=0;i--){
         printf("%c",line[i]);
     }
     free(line);
@@ -286,6 +311,51 @@ void extract_line(char *path,struct Section sections[],char nr_section,int sec,i
 
 }
 
+void find_allSF(char* path){
+    DIR *directory;
+    char * title = (char*) malloc(1000*sizeof(char));
+    struct dirent * entry;
+    char nr_section;
+    struct stat inode;
+    struct Section sections[15];
+    short version;
+    int j,count=0;
+
+    lstat(path,&inode);
+    if(!S_ISDIR(inode.st_mode)){
+        j = test_SF(path, sections, &nr_section, &version);
+        if (j == 0){
+            if(nr_section<4){
+                return;
+            }
+            for(int i=0; i<nr_section; i++){
+                if(sections[i].type==44){
+                    count++;
+                }
+            }
+            if(count>=4){
+                printf("%s\n",path);
+            }
+
+        }
+
+        return;
+    }
+    else{
+
+        directory = opendir(path);
+        while((entry = readdir(directory))!=0){
+            sprintf(title,"%s/%s",path,entry->d_name);
+            if(strcmp(entry->d_name,".")!=0 && strcmp(entry->d_name,"..")!=0  ) {
+                find_allSF(title);
+            }
+        }
+        free(title);
+
+    }
+
+
+}
 
 int main(int argc, char **argv){
     struct stat inode;
@@ -331,9 +401,21 @@ int main(int argc, char **argv){
                 } else if (strstr(argv[i], "permissions=")) {
                     strcpy(filter_perm, argv[i] + 12);
                 } else if (strstr(argv[i], "section=")) {
-                    sec = atoi(argv[i] + 8);
-                } else if (strstr(argv[i], "line=")) {
-                    lin = atoi(argv[i] + 5);
+                    if(check_number(argv[i]+8)){
+                        sec = atoi(argv[i] + 8);
+                    }
+                    else{
+                        printf("Argument not a number\n");
+                        exit(1);
+                    }
+                } else if (strstr(argv[i], "line=")){
+                    if(check_number(argv[i]+5)){
+                         lin = atoi(argv[i] + 5);
+                    }
+                    else{
+                        printf("Argument not a number\n");
+                        exit(1);
+                    }
                 } else {
                     printf("Not a valid command!\n");
                     exit(1);
@@ -372,11 +454,18 @@ int main(int argc, char **argv){
                     if (j != 0) {
                         printf("ERROR\ninvalid file");
                         printf("%d ", j);
-                        exit(9);
+                        exit(3);
                     }
                     extract_line(path, sections, nr_section, sec, lin);
                     free(path);
                     break;
+                case 4:
+                    if (lstat(path, &inode) < 0) {
+                        printf("ERROR\ninvalid directory path");
+                        exit(4);
+                    }
+                    printf("SUCCESS\n");
+                    find_allSF(path);
                 default:;
 
             }
