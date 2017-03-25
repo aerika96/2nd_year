@@ -92,7 +92,7 @@ int input_parse(int list,int parse,int extract,int find_all,int recursive, int p
 //when the list functionality is set there may be restrictions on the printed entries, this function verifies if they correspond the set filters
 int test_filter(int filt_type, char*filter, struct stat inode)
 {
-    char *permissions = (char*)malloc(10*sizeof(char));
+    char permissions[10];
 
     strcpy(permissions,"");
 
@@ -123,7 +123,6 @@ int test_filter(int filt_type, char*filter, struct stat inode)
             return 1;
         }
     }
-    free(permissions);
     return 0;
 
 }
@@ -132,7 +131,7 @@ int test_filter(int filt_type, char*filter, struct stat inode)
 void print_content(char * filt_size,char*filt_perm, char *path)
 {
     DIR* directory;
-    char title[1000];
+    char title[PATH_MAX];
     struct dirent *entry;
     struct stat inode;
 
@@ -168,7 +167,7 @@ void print_content(char * filt_size,char*filt_perm, char *path)
 void print_recursive(char*path,char *origPath, char*filter_size,char*filter_perm)
 {
     DIR *directory;
-    char * title = (char*) malloc(10000*sizeof(char));
+    char title[PATH_MAX];
     struct dirent * entry;
     struct stat inode;
 
@@ -181,6 +180,7 @@ void print_recursive(char*path,char *origPath, char*filter_size,char*filter_perm
         } else if (strlen(filter_size) == 0 && strlen(filter_perm) == 0) {
             printf("%s\n", path);
         }
+
         return;
     }
     else{
@@ -199,9 +199,10 @@ void print_recursive(char*path,char *origPath, char*filter_size,char*filter_perm
                 if(strcmp(entry->d_name,".")!=0 && strcmp(entry->d_name,"..")!=0  ) {
                     print_recursive(title, origPath,filter_size,filter_perm);
                 }
+
             }
             closedir(directory);
-            free(title);
+
     }
 }
 
@@ -370,7 +371,7 @@ void extract_line(char *path,struct Section sections[],char nr_section,int sec,i
 void find_allSF(char* path)
 {
     DIR *directory;
-    char * title = (char*) malloc(1000*sizeof(char));
+    char  title [PATH_MAX];
     struct dirent * entry;
     char nr_section;
     struct stat inode;
@@ -409,7 +410,6 @@ void find_allSF(char* path)
                 find_allSF(title);
             }
         }
-        free(title);
         closedir(directory);
     }
 
@@ -421,7 +421,7 @@ int main(int argc, char **argv)
 {
     struct stat inode;
     struct Section sections[15];
-    char * path,* filter_size,*filter_perm,nr_section;
+    char  path[PATH_MAX], filter_size[10],filter_perm[10],nr_section;
     int list, parse,extract,recursive,find_all,operation,j,path_nr;
     short version,sec,lin;
 
@@ -448,9 +448,6 @@ int main(int argc, char **argv)
             path_nr=0;
             lin = -1;
             sec = -1;
-            path = (char *) malloc(10000 * sizeof(char));
-            filter_size = (char *) malloc(1000 * sizeof(char));
-            filter_perm = (char *) malloc(1000 * sizeof(char));
             for (int i = 1; i < argc; i++) {
                 if (strcmp(argv[i], "list") == 0) {
                     list++;
@@ -531,9 +528,6 @@ int main(int argc, char **argv)
                 default: ;
 
             }
-            free(path);
-            free(filter_size);
-            free(filter_perm);
 
         }
     }
