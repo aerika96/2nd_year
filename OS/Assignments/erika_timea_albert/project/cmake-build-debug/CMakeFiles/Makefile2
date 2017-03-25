@@ -54,10 +54,10 @@ RM = /home/aerika/clion-2016.3.4/bin/cmake/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/aerika/Documents/Assignments/erika_timea_albert/project
+CMAKE_SOURCE_DIR = /home/aerika/Documents/2nd_year/OS/Assignments/erika_timea_albert/project
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/aerika/Documents/Assignments/erika_timea_albert/project/cmake-build-debug
+CMAKE_BINARY_DIR = /home/aerika/Documents/2nd_year/OS/Assignments/erika_timea_albert/project/cmake-build-debug
 
 #=============================================================================
 # Target rules for target CMakeFiles/project.dir
@@ -66,7 +66,7 @@ CMAKE_BINARY_DIR = /home/aerika/Documents/Assignments/erika_timea_albert/project
 CMakeFiles/project.dir/all:
 	$(MAKE) -f CMakeFiles/project.dir/build.make CMakeFiles/project.dir/depend
 	$(MAKE) -f CMakeFiles/project.dir/build.make CMakeFiles/project.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/aerika/Documents/Assignments/erika_timea_albert/project/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target project"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/aerika/Documents/2nd_year/OS/Assignments/erika_timea_albert/project/cmake-build-debug/CMakeFiles --progress-num=1,2 "Built target project"
 .PHONY : CMakeFiles/project.dir/all
 
 # Include target in all.
@@ -76,9 +76,9 @@ all: CMakeFiles/project.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/project.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/aerika/Documents/Assignments/erika_timea_albert/project/cmake-build-debug/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/aerika/Documents/2nd_year/OS/Assignments/erika_timea_albert/project/cmake-build-debug/CMakeFiles 2
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/project.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/aerika/Documents/Assignments/erika_timea_albert/project/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/aerika/Documents/2nd_year/OS/Assignments/erika_timea_albert/project/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/project.dir/rule
 
 # Convenience name for target.

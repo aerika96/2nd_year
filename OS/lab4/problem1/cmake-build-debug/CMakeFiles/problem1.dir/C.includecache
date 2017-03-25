@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/aerika/Documents/2nd_year/OS/lab4/problem1/main.c
+stdio.h
+-
+stdlib.h
+-
+sys/stat.h
+-
+string.h
+-
+dirent.h
+-
+

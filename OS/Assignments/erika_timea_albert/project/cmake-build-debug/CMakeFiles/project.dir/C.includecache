@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/aerika/Documents/Assignments/erika_timea_albert/project/a1.c
+/home/aerika/Documents/2nd_year/OS/Assignments/erika_timea_albert/project/a1.c
 stdio.h
 -
 stdlib.h
@@ -20,5 +20,7 @@ fcntl.h
 unistd.h
 -
 dirent.h
+-
+ctype.h
 -
 
