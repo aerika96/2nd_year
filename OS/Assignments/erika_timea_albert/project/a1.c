@@ -306,28 +306,50 @@ int get_line(int fd,int offset, char * line,int size, int line_no)
     int i=0;
     int current_line=0;
     int chars=0; //the number of read bytes from a section file - if it exceeds the size of the section, it meas we're out of it
-    char * buf = (char*)malloc(size*sizeof(char));
-    lseek(fd,offset,SEEK_SET);
-    while(read(fd,&buf[i],1)!=0 && current_line<line_no && chars<=size){
-        chars++;
-        if(buf[i]=='\n' || chars>size){
-            current_line++;
+    int bytes_to_read,copy_size=size;
+    char * store = (char*)malloc(size*sizeof(char));
+    char buf[100];
 
-            if(current_line<line_no){
-                i=0;
+    if(copy_size>=64){
+        bytes_to_read=64;
+        copy_size-=64;
+    }
+    else{
+        bytes_to_read=copy_size;
+    }
+    lseek(fd,offset,SEEK_SET);
+    while(read(fd,buf,bytes_to_read)!=0 && current_line<line_no && copy_size>=0){
+        chars=chars+bytes_to_read;
+        for(int j=0;j<bytes_to_read; j++){
+            store[i]=buf[j];
+            if(buf[j]=='\n' || chars>size){
+                current_line++;
+                if(current_line<line_no){
+                    i=0;
+                }
+                else if(current_line==line_no){
+                    break;
+                }
+            }
+            else {
+                i++;
             }
         }
+        if(copy_size>=64){
+            bytes_to_read=64;
+            copy_size-=64;
+        }
         else{
-            i++;
+            bytes_to_read=copy_size;
         }
     }
     //if the nr of lines in the section is smaller than the one we were looking for --> value returned ==-1, meaning the line was not found
     if(current_line < line_no) return -1;
     for(int j=0;j<=i;j++){
-        line[j]=buf[j];
+        line[j]=store[j];
     }
     line[i]='\0';
-    free(buf);
+    free(store);
     return i;
 }
 
