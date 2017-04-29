@@ -1,0 +1,1 @@
+/usr/bin/cc  -g   CMakeFiles/learninig_2.dir/main.c.o  -o learninig_2 

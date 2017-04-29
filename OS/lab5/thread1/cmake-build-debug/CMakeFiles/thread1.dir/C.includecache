@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/aerika/Documents/2nd_year/OS/lab5/thread1/main.c
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+sys/types.h
+-
+unistd.h
+-
+pthread.h
+-
+

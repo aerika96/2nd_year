@@ -1,0 +1,3 @@
+/home/aerika/Documents/2nd_year/OS/lab7/two_threads/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/aerika/Documents/2nd_year/OS/lab7/two_threads/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/aerika/Documents/2nd_year/OS/lab7/two_threads/cmake-build-debug/CMakeFiles/two_threads.dir

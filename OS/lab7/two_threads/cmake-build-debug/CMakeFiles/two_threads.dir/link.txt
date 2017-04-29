@@ -1,0 +1,1 @@
+/usr/bin/cc  -g   CMakeFiles/two_threads.dir/main.c.o  -o two_threads 

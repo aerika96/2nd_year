@@ -30,17 +30,17 @@ int check_number(char* string)
 int input_parse(int list,int parse,int extract,int find_all,int recursive, int path_nr,char* path,char*filter_perm,char *filter_size,int sec,int lin)
 {
 
- //if more than one functionality is set or one more than once, the function returns -->error message displayed
+    //if more than one functionality is set or one more than once, the function returns -->error message displayed
     if((list+parse+extract+find_all)==0 || (list+parse+extract+find_all)>1){
         return -2;
     }
 
- //if the path is epty or more than one path was set in the argument list, the function returns  -->error message displayed
+    //if the path is epty or more than one path was set in the argument list, the function returns  -->error message displayed
     if(strlen(path)==0 || path_nr>1) {
         return -1;
     }
 
- //verifying whether the set functionality is listing or not and if the other arguments contribute to its structure
+        //verifying whether the set functionality is listing or not and if the other arguments contribute to its structure
     else if(list==1){
         if(lin!=-1 || sec!=-1){
             return -2;
@@ -51,18 +51,18 @@ int input_parse(int list,int parse,int extract,int find_all,int recursive, int p
             return 0;
         }
 
-        //recursive listing
+            //recursive listing
         else if(recursive==1){
             return 1;
         }
 
-        // no listing because the argument "recursive" was set more than once
+            // no listing because the argument "recursive" was set more than once
         else if(recursive>1){
             return -2;
         }
     }
 
- //verifying whether the functionality set was parse or not and if the the other arguments contribute to its structure
+        //verifying whether the functionality set was parse or not and if the the other arguments contribute to its structure
     else if(parse==1){
         if(recursive>=1 || strlen(filter_perm)!=0 || strlen(filter_size)!=0 || sec!=-1 || lin!=-1){
             return -2;
@@ -70,14 +70,14 @@ int input_parse(int list,int parse,int extract,int find_all,int recursive, int p
         return 2;
     }
 
- //verifying whether the functionality set was extraction or not and if the other arguments contribute to its structure
+        //verifying whether the functionality set was extraction or not and if the other arguments contribute to its structure
     else if(extract==1){
         if(recursive>=1 || strlen(filter_perm)!=0 || strlen(filter_size)!=0 || sec==-1 || lin==-1){
             return -2;
         }
         return 3;
     }
- //verifying whether the functionality set was finding all the section files of a given cathegory and if the other arguments contribute to its structure
+        //verifying whether the functionality set was finding all the section files of a given cathegory and if the other arguments contribute to its structure
     else if(find_all==1){
         if(recursive >=1 || strlen(filter_perm)!=0 ||strlen(filter_size)!=0 || sec!=-1 || lin!=-1){
             return -2;
@@ -101,14 +101,14 @@ int test_filter(int filt_type, char*filter, struct stat inode)
         if(!S_ISDIR(inode.st_mode)){
             if(inode.st_size<atoi(filter)){
                 return 1;
-             }
-        }
-        else{
-                return 0;
             }
         }
+        else{
+            return 0;
+        }
+    }
 
-    //constructing a permission string based on the permissions of an entry to verify if it is the same with the filtering permission string
+        //constructing a permission string based on the permissions of an entry to verify if it is the same with the filtering permission string
     else if(filt_type==0) {
         (inode.st_mode & S_IRUSR) ? strcat(permissions, "r") : strcat(permissions, "-");
         (inode.st_mode & S_IWUSR) ? strcat(permissions, "w") : strcat(permissions, "-");
@@ -153,7 +153,7 @@ void print_content(char * filt_size,char*filt_perm, char *path)
                 (strlen(filt_perm) != 0 && test_filter(0, filt_perm, inode))) {
                 printf("%s\n", title);
             }
-            //if filters are not set
+                //if filters are not set
             else if (strlen(filt_size) == 0 && strlen(filt_perm) == 0) {
                 printf("%s\n", title);
             }
@@ -185,23 +185,23 @@ void print_recursive(char*path,char *origPath, char*filter_size,char*filter_perm
     }
     else{
 
-            //if the path is the absolute path of a directory, it has to be opened ; directories are only printed if they are not the same with the original path or the . and .. special directories
-            directory = opendir(path);
-            if (strcmp(path, origPath) != 0 && ((strlen(filter_size)!=0 && test_filter(1, filter_size, inode)) ||(strlen(filter_perm)!=0 && test_filter(0, filter_perm, inode)))) {
-                    printf("%s\n", path);
+        //if the path is the absolute path of a directory, it has to be opened ; directories are only printed if they are not the same with the original path or the . and .. special directories
+        directory = opendir(path);
+        if (strcmp(path, origPath) != 0 && ((strlen(filter_size)!=0 && test_filter(1, filter_size, inode)) ||(strlen(filter_perm)!=0 && test_filter(0, filter_perm, inode)))) {
+            printf("%s\n", path);
+        }
+
+        else if(strcmp(path, origPath) != 0 && strlen(filter_size)==0 && strlen(filter_perm)==0){
+            printf("%s\n", path);
+        }
+        while((entry = readdir(directory))!=0){
+            sprintf(title,"%s/%s",path,entry->d_name);
+            if(strcmp(entry->d_name,".")!=0 && strcmp(entry->d_name,"..")!=0  ) {
+                print_recursive(title, origPath,filter_size,filter_perm);
             }
 
-            else if(strcmp(path, origPath) != 0 && strlen(filter_size)==0 && strlen(filter_perm)==0){
-                printf("%s\n", path);
-            }
-            while((entry = readdir(directory))!=0){
-                sprintf(title,"%s/%s",path,entry->d_name);
-                if(strcmp(entry->d_name,".")!=0 && strcmp(entry->d_name,"..")!=0  ) {
-                    print_recursive(title, origPath,filter_size,filter_perm);
-                }
-
-            }
-            closedir(directory);
+        }
+        closedir(directory);
 
     }
 }
@@ -222,8 +222,8 @@ int test_SF(char * path, struct Section sections[],char *section_nr,short *versi
         exit(5);
     }
     if((fd = open(path,O_RDONLY))<0){
-            printf("\nCannot open file");
-            exit(5);
+        printf("\nCannot open file");
+        exit(5);
     }
     lseek(fd,-1*MAGIC,SEEK_END);
     if(read(fd,magic,4)<0){
@@ -306,7 +306,7 @@ int get_line(int fd,int offset, char * line,int size, int line_no)
     int i=0;
     int current_line=0;
     int chars=0; //the number of read bytes from a section file - if it exceeds the size of the section, it meas we're out of it
-    int bytes_to_read,copy_size=size;
+    int bytes_to_read,copy_size=size; //reading 64 bytes at once to avoid timeout and perform the verification on the buffer
     char * store = (char*)malloc(size*sizeof(char));
     char buf[100];
 
@@ -459,7 +459,7 @@ int main(int argc, char **argv)
                 exit(0);
             }
         }
-        //if argc >2 it means we have a whole sequence of arguments in any order possible -->
+            //if argc >2 it means we have a whole sequence of arguments in any order possible -->
             // we need to traverse the whole arguments list to tell whether it is a valid instruction, if yes, than which one
         else {
             list = 0;

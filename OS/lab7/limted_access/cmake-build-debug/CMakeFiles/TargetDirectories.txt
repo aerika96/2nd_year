@@ -1,0 +1,3 @@
+/home/aerika/Documents/2nd_year/OS/lab7/limted_access/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/aerika/Documents/2nd_year/OS/lab7/limted_access/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/aerika/Documents/2nd_year/OS/lab7/limted_access/cmake-build-debug/CMakeFiles/limted_access.dir

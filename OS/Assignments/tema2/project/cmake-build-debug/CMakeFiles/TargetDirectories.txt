@@ -1,0 +1,3 @@
+/home/aerika/Documents/2nd_year/OS/Assignments/tema2/project/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/aerika/Documents/2nd_year/OS/Assignments/tema2/project/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/aerika/Documents/2nd_year/OS/Assignments/tema2/project/cmake-build-debug/CMakeFiles/project.dir

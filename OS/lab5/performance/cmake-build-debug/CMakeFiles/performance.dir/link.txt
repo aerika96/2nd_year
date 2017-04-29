@@ -1,0 +1,1 @@
+/usr/bin/cc  -g   CMakeFiles/performance.dir/main.c.o  -o performance 

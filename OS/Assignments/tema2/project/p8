@@ -1,0 +1,33 @@
+ pthread_mutex_lock(&mutex1);
+    while(start!=thr){
+        pthread_cond_wait(&start_cond,&mutex1);
+    }
+    if(start==4){
+        start=1;
+    }
+    else start++;
+    pthread_mutex_unlock(&mutex1);
+
+    info(BEGIN,proc,thr);
+
+    pthread_mutex_lock(&mutex1);
+        if(start==1) {
+            pthread_cond_broadcast(&start_cond);
+        }
+        else{
+            pthread_cond_broadcast(&end_cond);
+        }
+    pthread_mutex_unlock(&mutex1);
+
+    pthread_mutex_lock(&mutex1);
+    while(end!=thr) {
+        pthread_cond_wait(&end_cond, &mutex1);
+    }
+        end++;
+    pthread_mutex_unlock(&mutex1);
+
+    info(END,proc,thr);
+
+    pthread_mutex_lock(&mutex2);
+    pthread_cond_broadcast(&start_cond);
+    pthread_mutex_unlock(&mutex2);

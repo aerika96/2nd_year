@@ -1,0 +1,3 @@
+/home/aerika/Documents/2nd_year/OS/lab8/learing_1/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/aerika/Documents/2nd_year/OS/lab8/learing_1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/aerika/Documents/2nd_year/OS/lab8/learing_1/cmake-build-debug/CMakeFiles/learing_1.dir

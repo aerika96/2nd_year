@@ -1,0 +1,1 @@
+/usr/bin/cc  -g   CMakeFiles/alternate.dir/main.c.o  -o alternate 
