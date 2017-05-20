@@ -1,0 +1,3 @@
+/home/aerika/Documents/2nd_year/OS/lab10/serv_cl/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/aerika/Documents/2nd_year/OS/lab10/serv_cl/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/aerika/Documents/2nd_year/OS/lab10/serv_cl/cmake-build-debug/CMakeFiles/serv_cl.dir

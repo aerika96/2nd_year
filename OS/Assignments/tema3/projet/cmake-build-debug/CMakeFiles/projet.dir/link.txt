@@ -1,0 +1,1 @@
+/usr/bin/cc  -g   CMakeFiles/projet.dir/main.c.o  -o projet 

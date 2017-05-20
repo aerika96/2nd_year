@@ -1,0 +1,4 @@
+/home/aerika/clion-2016.3.4/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/aerika/Documents/2nd_year/OS/lab10/serv_cl
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/aerika/Documents/2nd_year/OS/lab10/serv_cl/cmake-build-debug
