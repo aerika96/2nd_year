@@ -9,8 +9,6 @@
 #include <sys/mman.h>
 
 typedef  struct _section{
-    char name[7];
-    short type;
     int size;
     int offset;
 }SectionT;
@@ -178,18 +176,53 @@ void handle_read_offset(){
         write_response("SUCCESS");
 
 }
-/*
-void read_sections(unsigned int section_no){
 
-    unsigned int standard_end=*(int*)file_start+file_size-1;
-    unsigned short header_size;
-    header_size=*(unsigned short*)(standard_end-4);
-    printf("%d",header_size);
+SectionT read_sections(unsigned int section_no){
+
+    void* address=(void*)file_start+file_size;
+    short header_size;
+    char *magic= (char*)malloc(5*sizeof(char));
+    char sections;
+    int current_section=0;
+    SectionT section_data;
+   // int header_start;
+
+    if(file_size<4){
+        printf("ERROR\nthe file is not long enough\n");
+        write_response("ERROR");
+    }
+
+    for(int i=0; i<4; i++){
+        magic[i]=*(char*)(address-4+i);
+    }
+    magic[5]='\0';
+
+    header_size=*(short*)(address-6);
+    address =(void*)(address-header_size);
+    sections=*(char*)(address+2);
+    address+=3;
+
+    if(sections<section_no){
+        section_data.offset=-1;
+        section_data.size=-1;
+        return section_data;
+    }
+
+    while(current_section<section_no){
+        section_data.offset=*(int*)(address+9);
+        section_data.size=*(int*)(address+13);
+        address+=17;
+        current_section++;
+    }
+    return section_data;
+
 }
 
 void handle_read_section(){
 
     unsigned int section_no,offset,no_of_bytes;
+    void* start_from;
+    SectionT received_data;
 
     write_response("READ_FROM_FILE_SECTION");
     if(read(fd_req,&section_no,sizeof(unsigned int))<0){
@@ -205,16 +238,36 @@ void handle_read_section(){
         return;
     }
 
-    if(file_start<(void*)0 || addr<(char*)0 ){
-        printf("ERROR\nconditions not satisfied\n");
+    if(addr<(char*)0){
+        printf("ERROR\nshm not attached\n");
         write_response("ERROR");
         return;
     }
-    printf("%d %d %d",section_no,offset,no_of_bytes);
-    //read_sections(section_no);
-    //printf("%d",section_pos);
-    write_response("ERROR");
-}*/
+    if(file_start<(void*)0){
+        printf("ERROR\nfile not mapped\n");
+        write_response("ERROR");
+        return;
+    }
+
+    received_data=read_sections(section_no);
+    if(received_data.offset<0){
+        printf("ERROR\nnot enough sections for the requested one\n");
+        write_response("ERROR");
+        return;
+    }
+    printf("%d ",file_size);
+    printf("%d %d ",received_data.size,received_data.offset);
+    if(offset+no_of_bytes>received_data.size){
+        printf("ERROR\noffset out of the section\n");
+        write_response("ERROR");
+        return;
+    }
+    start_from=file_start+received_data.offset+offset;
+    for(int i=0; i<no_of_bytes; i++){
+       addr[i]=*(char*)(start_from+i);
+    }
+    write_response("SUCCESS");
+}
 int main(int argc, char **argv) {
 
     char buf[100],*request;
@@ -246,31 +299,33 @@ int main(int argc, char **argv) {
 
     while(1) {
         request=read_request();
-        if ((strncmp(request, "EXIT", length + 1) == 0)) {
+        length=strlen(request);
+        if ((strncmp(request, "EXIT", length) == 0)) {
             break;
-        } else if ((strncmp(request, "PING", length + 1) == 0)) {
+        } else if ((strncmp(request, "PING", length) == 0)) {
             handle_ping();
         }
-        else if ((strncmp(request, "CREATE_SHM", length + 1) == 0)){
+        else if ((strncmp(request, "CREATE_SHM", length) == 0)){
            handle_create_shm();
         }
-        else if((strncmp(request,"WRITE_TO_SHM",length + 1))==0){
+        else if((strncmp(request,"WRITE_TO_SHM",length))==0){
             handle_write_shm();
         }
-        else if((strncmp(request,"MAP_FILE",length+1))==0){
+        else if((strncmp(request,"MAP_FILE",length))==0){
             handle_map_file();
         }
-        else if((strncmp(request,"READ_FROM_FILE_OFFSET",length+1))==0) {
+        else if((strncmp(request,"READ_FROM_FILE_OFFSET",length))==0) {
             handle_read_offset();
         }
-       /* else if((strncmp(request,"READ_FROM_FILE_SECTION",length+1))==0){
+        else if((strncmp(request,"READ_FROM_FILE_SECTION",length))==0){
 
             handle_read_section();
 
-        }*/
-        else {
+        }
+        else{
             break;
         }
+
     }
     close(fd_req);
     close(fd_resp);
